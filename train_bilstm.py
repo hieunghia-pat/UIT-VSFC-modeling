@@ -94,10 +94,10 @@ def main():
     f1_test = 0
     pbar = range(config.epochs)
     for e in pbar:
-        loss = run(net, train_loader, optimizer, tracker, train=True, prefix='Training', epoch=e)
+        loss = run(net, train_loader, optimizer, tracker, train=True, prefix='Training')
 
-        val_returned = run(net, val_loader, optimizer, tracker, train=False, prefix='Validation', epoch=e)
-        test_returned = run(net, test_loader, optimizer, tracker, train=False, prefix='Evaluation', epoch=e)
+        val_returned = run(net, val_loader, optimizer, tracker, train=False, prefix='Validation')
+        test_returned = run(net, test_loader, optimizer, tracker, train=False, prefix='Evaluation')
 
         Logger.info("+"*13)
 
