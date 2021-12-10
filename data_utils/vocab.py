@@ -91,7 +91,7 @@ class Vocab(object):
             sentiments_file = open(os.path.join(path, "sentiments.txt"))
         
             for sentence, sentiment in zip(sentences_file, sentiments_file):
-                sentence = " ".join(self.tokenizer(sentence)[0])
+                sentence = self.tokenizer(sentence)
                 sentence = preprocess_sentence(sentence)
                 self.freqs.update(sentence)
                 self.output_cats.add(sentiment)
