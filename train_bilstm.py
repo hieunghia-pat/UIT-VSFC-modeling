@@ -92,7 +92,7 @@ def main():
 
     max_f1 = 0 # for saving the best model
     f1_test = 0
-    pbar = range(config.epochs)
+    pbar = tqdm(range(config.epochs))
     for e in pbar:
         loss = run(net, train_loader, optimizer, tracker, train=True, prefix='Training')
 
