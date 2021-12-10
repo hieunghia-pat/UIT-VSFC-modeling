@@ -157,7 +157,6 @@ class Vocab(object):
                             raise exception
 
         os.makedirs(os.path.join(cache, "models", "wordsegmenter"))
-        shutil.move(os.path.join(cache, "VnCoreNLP-1.1.1.jar"), os.path.join(cache))  
         shutil.move(os.path.join(cache, "vi-vocab"), os.path.join(cache, "models", "wordsegmenter"))
         shutil.move(os.path.join(cache, "wordsegmenter.rdr"), os.path.join(cache, "models", "wordsegmenter"))
 
