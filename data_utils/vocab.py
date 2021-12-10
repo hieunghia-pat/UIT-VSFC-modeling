@@ -2,7 +2,7 @@ import torch
 from vncorenlp.vncorenlp import VnCoreNLP
 from data_utils.vector import Vectors
 from data_utils.vector import pretrained_aliases
-from data_utils.utils import preprocess_sentence, reporthook
+from data_utils.utils import preprocess_sentence, reporthook, default_tokenizer
 from collections import defaultdict, Counter
 import logging
 import six
@@ -80,7 +80,7 @@ class Vocab(object):
         if tokenize_level == "word":
             self.tokenizer = self.load_tokenizer(".vncorenlp")
         else:
-            self.tokenizer = lambda sentence: sentence
+            self.tokenizer = default_tokenizer
 
     def make_vocab(self, paths):
         self.freqs = Counter()

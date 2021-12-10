@@ -4,7 +4,6 @@ import torch.optim as optim
 import torch.backends.cudnn as cudnn
 
 import numpy as np
-from logging import Logger
 from tqdm import tqdm
 
 import config
@@ -18,7 +17,7 @@ import os
 
 metrics = Metrics()
 
-def run(net, loader, optimizer, tracker, train=False, prefix=''):
+def run_epoch(net, loader, optimizer, tracker, train=False, prefix='', epoch=0):
     """ Run an epoch over the given loader """
     if train:
         net.train()
@@ -34,7 +33,8 @@ def run(net, loader, optimizer, tracker, train=False, prefix=''):
     f1_tracker = tracker.track('{}_F1'.format(prefix), tracker_class(**tracker_params))
 
     criterion = nn.CrossEntropyLoss().cuda()
-    for x, y in loader:
+    pbar = tqdm(loader, desc=f"Epoch {epoch} - {prefix}")
+    for x, y in pbar:
         x = x.cuda()
         y = y.cuda()
 
@@ -43,9 +43,11 @@ def run(net, loader, optimizer, tracker, train=False, prefix=''):
         if train:
             optimizer.zero_grad()
             loss = criterion(y_pred, y)
-            loss_tracker.append(loss.item())
             loss.backward()
             optimizer.step()
+
+            loss_tracker.append(loss.item())
+            pbar.set_postfix({"loss": loss_tracker.mean.value})
         else:
             loss = np.array(0)
             scores = metrics.get_scores(y_pred.argmax(dim=-1).cpu(), y.cpu())
@@ -54,6 +56,8 @@ def run(net, loader, optimizer, tracker, train=False, prefix=''):
             pre_tracker.append(scores["precision"])
             rec_tracker.append(scores["recall"])
             f1_tracker.append(scores["F1"])
+            pbar.set_postfix({"accuracy": acc_tracker.mean.value, "precision": pre_tracker.mean.value, 
+                                "recall": rec_tracker.mean.value, "F1": f1_tracker.mean.value})
 
     if not train:
         return {
@@ -92,14 +96,10 @@ def main():
 
     max_f1 = 0 # for saving the best model
     f1_test = 0
-    pbar = tqdm(range(config.epochs))
-    for e in pbar:
-        loss = run(net, train_loader, optimizer, tracker, train=True, prefix='Training')
-
-        val_returned = run(net, val_loader, optimizer, tracker, train=False, prefix='Validation')
-        test_returned = run(net, test_loader, optimizer, tracker, train=False, prefix='Evaluation')
-
-        print("+"*13)
+    for e in range(config.epochs):
+        run_epoch(net, train_loader, optimizer, tracker, train=True, prefix='Training', epoch=e)
+        val_returned = run_epoch(net, val_loader, optimizer, tracker, train=False, prefix='Validation', epoch=e)
+        test_returned = run_epoch(net, test_loader, optimizer, tracker, train=False, prefix='Evaluation', epoch=e)
 
         results = {
             'tracker': tracker.to_dict(),
@@ -122,10 +122,10 @@ def main():
             f1_test = test_returned["F1"]
             torch.save(results, os.path.join(config.model_checkpoint, "model_best.pth"))
 
-        pbar.update({"loss": loss, "best F1": max_f1})
+        print("+"*13)
 
-        print(f"Training finished. Best F1 score: {max_f1}. F1 score on test set: {f1_test}")
-        print("="*31)
+    print(f"Training finished. Best F1 score: {max_f1}. F1 score on test set: {f1_test}")
+    print("="*31)
 
 if __name__ == '__main__':
     main()

@@ -16,5 +16,5 @@ learning_rate = 5e-3
 
 
 ## training configuration
-model_checkpoint = ""
+model_checkpoint = "saved_models"
 epochs = 30
