@@ -92,7 +92,7 @@ class Vocab(object):
             sentiments_file = open(os.path.join(path, "sentiments.txt"))
         
             for sentence, sentiment in zip(sentences_file, sentiments_file):
-                sentence = self.tokenizer(sentence)[0]
+                sentence = " ".join(self.tokenizer(sentence)[0])
                 sentence = preprocess_sentence(sentence)
                 self.freqs.update(sentence)
                 self.output_cats.add(sentiment)
@@ -162,7 +162,7 @@ class Vocab(object):
         shutil.move(os.path.join(cache, "vi-vocab"), os.path.join(cache, "models", "wordsegmenter"))
         shutil.move(os.path.join(cache, "wordsegmenter.rdr"), os.path.join(cache, "models", "wordsegmenter"))
 
-        return VnCoreNLP(os.path.join(cache, "VnCoreNLP-1.1.1.jar")).tokenize
+        return VnCoreNLP(os.path.join(cache, "VnCoreNLP-1.1.1.jar"), annotators="wseg", max_heap_size='-Xmx500m').tokenize
 
     def load_vectors(self, vectors, **kwargs):
         """

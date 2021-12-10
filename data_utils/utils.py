@@ -5,6 +5,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 def preprocess_sentence(sentence):
+    print(sentence)
     sentence = sentence.strip().split()
     return ["<sos>"] + sentence + ["<eos>"]
     
@@ -30,7 +31,7 @@ def reporthook(t):
     return inner
 
 def default_tokenizer(sentence):
-    return [sentence]
+    return sentence.split()
 
 def unk_init(token, dim):
     '''

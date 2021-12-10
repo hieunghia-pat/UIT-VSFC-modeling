@@ -5,7 +5,7 @@ val_path = "../UIT-VSFC/dev"
 test_path = "../UIT-VSFC/test"
 specials = ["<pad>", "<sos>", "<eos>"]
 word_embedding = None
-tokenize_level = "syllable" # "word"
+tokenize_level = "word" # "word"
 
 ## model configuration
 embedding_dim = 300
