@@ -30,7 +30,7 @@ def reporthook(t):
     return inner
 
 def default_tokenizer(sentence):
-    return sentence
+    return [sentence]
 
 def unk_init(token, dim):
     '''

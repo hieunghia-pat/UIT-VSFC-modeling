@@ -46,6 +46,12 @@ class Vocab(object):
                 returns a Tensor of the same size. Default: torch.Tensor.zero_
             vectors_cache: directory for cached vectors. Default: '.vector_cache'
         """ 
+
+        if tokenize_level == "word":
+            self.tokenizer = self.load_tokenizer(".vncorenlp")
+        else:
+            self.tokenizer = default_tokenizer
+
         self.make_vocab(paths)
         counter = self.freqs.copy()
         min_freq = max(min_freq, 1)
@@ -77,11 +83,6 @@ class Vocab(object):
         else:
             assert unk_init is None and vectors_cache is None
 
-        if tokenize_level == "word":
-            self.tokenizer = self.load_tokenizer(".vncorenlp")
-        else:
-            self.tokenizer = default_tokenizer
-
     def make_vocab(self, paths):
         self.freqs = Counter()
         self.output_cats = set()
@@ -91,6 +92,7 @@ class Vocab(object):
             sentiments_file = open(os.path.join(path, "sentiments.txt"))
         
             for sentence, sentiment in zip(sentences_file, sentiments_file):
+                sentence = self.tokenizer(sentence)
                 sentence = preprocess_sentence(sentence)
                 self.freqs.update(sentence)
                 self.output_cats.add(sentiment)
@@ -160,7 +162,7 @@ class Vocab(object):
         shutil.move(os.path.join(cache, "vi-vocab"), os.path.join(cache, "models", "wordsegmenter"))
         shutil.move(os.path.join(cache, "wordsegmenter.rdr"), os.path.join(cache, "models", "wordsegmenter"))
 
-        return lambda sentence: VnCoreNLP(os.path.join(cache, "VnCoreNLP-1.1.1.jar")).tokenize(sentence)[0]
+        return VnCoreNLP(os.path.join(cache, "VnCoreNLP-1.1.1.jar")).tokenize
 
     def load_vectors(self, vectors, **kwargs):
         """
