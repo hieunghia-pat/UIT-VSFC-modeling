@@ -9,7 +9,6 @@ import six
 import os
 from tqdm import tqdm
 from urllib.request import urlretrieve
-import shutil
 
 logger = logging.getLogger(__name__)
 
@@ -48,9 +47,9 @@ class Vocab(object):
         """ 
 
         if tokenize_level == "word":
-            self.tokenizer = self.load_tokenizer(".vncorenlp")
+            self.segmenter = self.load_tokenizer(".vncorenlp")
         else:
-            self.tokenizer = default_tokenizer
+            self.segmenter = None
 
         self.make_vocab(paths)
         counter = self.freqs.copy()
@@ -100,6 +99,12 @@ class Vocab(object):
                     self.max_sentence_length = len(sentence)
 
         self.output_cats = list(self.output_cats)
+
+    def tokenizer(self, sentence):
+        if self.segmenter:
+            return " ".join(self.segmenter.tokenize(sentence)[0])
+        else:
+            return default_tokenizer(sentence)
 
     def _encode_sentence(self, sentence):
         """ Turn a question into a vector of indices and a question length """
@@ -158,11 +163,7 @@ class Vocab(object):
                             os.remove(dest)
                             raise exception
 
-        os.makedirs(os.path.join(cache, "models", "wordsegmenter"))
-        shutil.move(os.path.join(cache, "vi-vocab"), os.path.join(cache, "models", "wordsegmenter"))
-        shutil.move(os.path.join(cache, "wordsegmenter.rdr"), os.path.join(cache, "models", "wordsegmenter"))
-
-        return VnCoreNLP(os.path.join(cache, "VnCoreNLP-1.1.1.jar"), annotators="wseg", max_heap_size='-Xmx500m').tokenize
+        return VnCoreNLP(os.path.join(cache, "VnCoreNLP-1.1.1.jar"), annotators="wseg", max_heap_size='-Xmx500m')
 
     def load_vectors(self, vectors, **kwargs):
         """

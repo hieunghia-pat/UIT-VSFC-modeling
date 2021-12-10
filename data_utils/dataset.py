@@ -14,12 +14,6 @@ class Dataset(Dataset):
         self.vocab = Vocab([path]) if vocab is None else vocab
 
     @property
-    def max_question_length(self):
-        if not hasattr(self, '_max_length'):
-            self._max_length = max(map(len, self.questions)) + 2
-        return self._max_length + 2
-
-    @property
     def num_tokens(self):
         return len(self.vocab.stoi)
 
