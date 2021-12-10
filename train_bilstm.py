@@ -99,7 +99,7 @@ def main():
         val_returned = run(net, val_loader, optimizer, tracker, train=False, prefix='Validation')
         test_returned = run(net, test_loader, optimizer, tracker, train=False, prefix='Evaluation')
 
-        Logger.info("+"*13)
+        print("+"*13)
 
         results = {
             'tracker': tracker.to_dict(),
@@ -124,8 +124,8 @@ def main():
 
         pbar.update({"loss": loss, "best F1": max_f1})
 
-        Logger.info(f"Training finished. Best F1 score: {max_f1}. F1 score on test set: {f1_test}")
-        Logger.info("="*31)
+        print(f"Training finished. Best F1 score: {max_f1}. F1 score on test set: {f1_test}")
+        print("="*31)
 
 if __name__ == '__main__':
     main()
