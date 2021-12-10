@@ -5,7 +5,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 def preprocess_sentence(sentence):
-    print(sentence)
     sentence = sentence.strip().split()
     return ["<sos>"] + sentence + ["<eos>"]
     
