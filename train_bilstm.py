@@ -14,6 +14,7 @@ from metric_utils.metrics import Metrics
 from metric_utils.tracker import Tracker
 
 import os
+import pickle
 
 metrics = Metrics()
 
@@ -77,6 +78,8 @@ def main():
     vocab = Vocab([config.train_path, config.val_path, config.test_path], 
                             specials=config.specials, vectors=config.word_embedding, 
                             tokenize_level=config.tokenize_level)
+
+    pickle.dump(vocab, open("vocab.pkl", "wb"))
     metrics.vocab = vocab
     
     train_dataset = SentimentDataset(config.train_path, vocab)
@@ -112,8 +115,7 @@ def main():
                 "f1-val": val_returned["F1"],
                 "f1-test": test_returned["F1"]
 
-            },
-            'vocab': train_dataset.vocab,
+            }
         }
     
         torch.save(results, os.path.join(config.model_checkpoint, "model_last.pth"))
