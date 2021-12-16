@@ -78,8 +78,7 @@ def main():
     vocab = Vocab([config.train_path, config.val_path, config.test_path], 
                             specials=config.specials, vectors=config.word_embedding, 
                             tokenize_level=config.tokenize_level)
-
-    pickle.dump(vocab, open("vocab.pkl", "wb"))
+                            
     metrics.vocab = vocab
     
     train_dataset = SentimentDataset(config.train_path, vocab)
