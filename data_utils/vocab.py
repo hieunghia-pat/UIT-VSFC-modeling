@@ -96,8 +96,8 @@ class Vocab(object):
                 sentence = preprocess_sentence(sentence)
                 self.freqs.update(sentence)
                 self.output_cats.add(sentiment)
-                if len(sentence) > self.max_sentence_length:
-                    self.max_sentence_length = len(sentence)
+                if len(sentence) + 2 > self.max_sentence_length:
+                    self.max_sentence_length = len(sentence) + 2
 
         self.output_cats = list(self.output_cats)
 
