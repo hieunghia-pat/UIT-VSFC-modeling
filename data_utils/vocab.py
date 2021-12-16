@@ -7,6 +7,7 @@ from collections import defaultdict, Counter
 import logging
 import six
 import os
+import shutil
 from tqdm import tqdm
 from urllib.request import urlretrieve
 
@@ -162,6 +163,10 @@ class Vocab(object):
                         except KeyboardInterrupt as exception:  # remove the partial zip file
                             os.remove(dest)
                             raise exception
+
+            os.makedirs(os.path.join(cache, "models", "wordsegmenter"))
+            shutil.move(os.path.join(cache, "vi-vocab"), os.path.join(cache, "models", "wordsegmenter"))
+            shutil.move(os.path.join(cache, "wordsegmenter.rdr"), os.path.join(cache, "models", "wordsegmenter"))
 
         return VnCoreNLP(os.path.join(cache, "VnCoreNLP-1.1.1.jar"), annotators="wseg", max_heap_size='-Xmx500m')
 
