@@ -111,7 +111,12 @@ class Vocab(object):
         """ Turn a question into a vector of indices and a question length """
         vec = torch.ones(self.max_sentence_length).long() * self.stoi["<pad>"]
         for i, token in enumerate(sentence):
-            vec[i] = self.stoi[token]
+            try:
+                vec[i] = self.stoi[token]
+            except: 
+                print(i, token, len(sentence))
+                print(sentence)
+                raise Exception("For debugging")
         return vec
 
     def _decode_sentence(self, sentence_vecs: torch.Tensor):

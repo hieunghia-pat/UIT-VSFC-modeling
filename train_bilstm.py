@@ -9,7 +9,7 @@ from tqdm import tqdm
 import config
 from data_utils.vocab import Vocab
 from model.bilstm import BiLSTM
-from data_utils.dataset import Dataset
+from data_utils.dataset import SentimentDataset
 from metric_utils.metrics import Metrics
 from metric_utils.tracker import Tracker
 
@@ -79,13 +79,13 @@ def main():
                             tokenize_level=config.tokenize_level)
     metrics.vocab = vocab
     
-    train_dataset = Dataset(config.train_path, vocab)
+    train_dataset = SentimentDataset(config.train_path, vocab)
     train_loader = train_dataset.get_loader()
     
-    val_dataset = Dataset(config.val_path, vocab)
+    val_dataset = SentimentDataset(config.val_path, vocab)
     val_loader = val_dataset.get_loader()
     
-    test_dataset = Dataset(config.test_path, vocab)
+    test_dataset = SentimentDataset(config.test_path, vocab)
     test_loader = test_dataset.get_loader()
 
     net = nn.DataParallel(BiLSTM(vocab, config.embedding_dim, config.hidden_size)).cuda()

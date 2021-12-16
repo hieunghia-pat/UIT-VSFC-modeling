@@ -5,13 +5,14 @@ from data_utils.vocab import Vocab
 import os
 import config
 
-class Dataset(Dataset):
+class SentimentDataset(Dataset):
     """ VQA dataset, open-ended """
     def __init__(self, path, vocab=None):
-        super(Dataset, self).__init__()
-        self.load_dataset(path)
+        super(SentimentDataset, self).__init__()
 
         self.vocab = Vocab([path]) if vocab is None else vocab
+
+        self.load_dataset(path)
 
     @property
     def num_tokens(self):
@@ -23,6 +24,7 @@ class Dataset(Dataset):
 
         self.data = []
         for sentence, sentiment in zip(sentences_file, sentiments_file):
+            sentence = self.vocab.tokenizer(sentence)
             self.data.append({
                 "sentence": preprocess_sentence(sentence),
                 "sentiment": sentiment
