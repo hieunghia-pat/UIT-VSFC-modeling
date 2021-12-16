@@ -117,11 +117,11 @@ def main():
             }
         }
     
-        torch.save(results, os.path.join(config.model_checkpoint, "model_last.pth"))
+        torch.save(results, os.path.join(config.model_checkpoint, "deeper_model_last.pth"))
         if val_returned["F1"] > max_f1:
             max_f1 = val_returned["F1"]
             f1_test = test_returned["F1"]
-            torch.save(results, os.path.join(config.model_checkpoint, "model_best.pth"))
+            torch.save(results, os.path.join(config.model_checkpoint, "deeper_model_best.pth"))
 
         print("+"*13)
 
